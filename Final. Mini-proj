@@ -1,0 +1,426 @@
+#include <stdio.h>
+
+#include <stdbool.h>
+
+#include <string.h>
+
+#define MAX_TEAMS 10
+
+#define MAX_MATCHES 45
+
+struct Team {
+
+    char name[50];
+
+    int wins;
+
+    int losses;
+
+};
+
+struct Match {
+
+    struct Team homeTeam;
+
+    struct Team awayTeam;
+
+    int homeScore;
+
+    int awayScore;
+
+    bool played;
+
+};
+
+void newTeam(struct Team teams[], int *teamCount) {
+
+    if (*teamCount >= MAX_TEAMS) {
+
+        printf("Maximum team limit reached.\n");
+
+        return;
+
+    }
+
+    struct Team newTeam;
+
+    printf("Enter team name: ");
+
+    scanf("%s", newTeam.name);
+
+    newTeam.wins = 0;
+
+    newTeam.losses = 0;
+
+    teams[*teamCount] = newTeam;
+
+    (*teamCount)++;
+
+    printf("Team added successfully.\n");
+
+}
+
+void displayTeams(struct Team teams[], int teamCount) {
+
+    if (teamCount == 0) {
+
+        printf("No teams found.\n");
+
+        return;
+
+    }
+
+    printf("Tournament Teams:\n");
+
+    printf("-----------------\n");
+
+    for (int i = 0; i < teamCount; i++) {
+
+        printf("Team: %s\n", teams[i].name);
+
+        printf("Wins: %d\n", teams[i].wins);
+
+        printf("Losses: %d\n", teams[i].losses);
+
+        printf("\n");
+
+    }
+
+}
+
+void addMatchResult(struct Match matches[], struct Team teams[], int *matchCount, int teamCount) {
+
+    if (teamCount < 2) {
+
+        printf("At least two teams are required to add a match result.\n");
+
+        return;
+
+    }
+
+    if (*matchCount >= MAX_MATCHES) {
+
+        printf("Maximum match limit reached.\n");
+
+        return;
+
+    }
+
+    struct Match newMatch;
+
+    printf("Enter home team name: ");
+
+    scanf("%s", newMatch.homeTeam.name);
+
+    printf("Enter away team name: ");
+
+    scanf("%s", newMatch.awayTeam.name);
+
+    printf("Enter home team score: ");
+
+    scanf("%d", &newMatch.homeScore);
+
+    printf("Enter away team score: ");
+
+    scanf("%d", &newMatch.awayScore);
+
+    newMatch.played = true;
+
+    for (int i = 0; i < teamCount; i++) {
+
+        if (strcmp(teams[i].name, newMatch.homeTeam.name) == 0) {
+
+            if (newMatch.homeScore > newMatch.awayScore) {
+
+                teams[i].wins++;
+
+            } else {
+
+                teams[i].losses++;
+
+            }
+
+        } else if (strcmp(teams[i].name, newMatch.awayTeam.name) == 0) {
+
+            if (newMatch.awayScore > newMatch.homeScore) {
+
+                teams[i].wins++;
+
+            } else {
+
+                teams[i].losses++;
+
+            }
+
+        }
+
+    }
+
+    matches[*matchCount] = newMatch;
+
+    (*matchCount)++;
+
+    printf("Match result added successfully.\n");
+
+}
+
+void displayMatchResults(struct Match matches[], int matchCount) {
+
+    if (matchCount == 0) {
+
+        printf("No matches found.\n");
+
+        return;
+
+    }
+
+    printf("Match Results:\n");
+
+    printf("--------------\n");
+
+    for (int i = 0; i < matchCount; i++) {
+
+        printf("Home Team: %s\n", matches[i].homeTeam.name);
+
+        printf("Away Team: %s\n", matches[i].awayTeam.name);
+
+}    
+
+void saveTeamsToFile(struct Team teams[], int teamCount, const char* filename) {
+
+    FILE* file = fopen(filename, "w");
+
+    if (file == NULL) {
+
+        printf("Unable to open file for writing.\n");
+
+        return;
+
+    }
+
+    for (int i = 0; i < teamCount; i++) {
+
+        fprintf(file, "%s %d %d\n", teams[i].name, teams[i].wins, teams[i].losses);
+
+    }
+
+    fclose(file);
+
+    printf("Teams saved to file successfully.\n");
+
+}
+
+void loadTeamsFromFile(struct Team teams[], int *teamCount, const char* filename) {
+
+    FILE* file = fopen(filename, "r");
+
+    if (file == NULL) {
+
+        printf("Unable to open file for reading.\n");
+
+        return;
+
+    }
+
+    *teamCount = 0;
+
+    while ((*teamCount) < MAX_TEAMS && fscanf(file, "%s %d %d", teams[*teamCount].name, &teams[*teamCount].wins, &teams[*teamCount].losses) == 3) {
+
+        (*teamCount)++;
+
+    }
+
+    fclose(file);
+
+    printf("Teams loaded from file successfully.\n");
+
+}
+
+void saveMatchesToFile(struct Match matches[], int matchCount, const char* filename) {
+
+    FILE* file = fopen(filename, "w");
+
+    if (file == NULL) {
+
+        printf("Unable to open file for writing.\n");
+
+        return;
+
+    }
+
+    for (int i = 0; i < matchCount; i++) {
+
+        fprintf(file, "%s %s %d %d %d\n", matches[i].homeTeam.name, matches[i].awayTeam.name, matches[i].homeScore, matches[i].awayScore, matches[i].played);
+
+    }
+
+    fclose(file);
+
+    printf("Match results saved to file successfully.\n");
+
+}
+
+void loadMatchesFromFile(struct Match matches[], int *matchCount, const char* filename) {
+
+    FILE* file = fopen(filename, "r");
+
+    if (file == NULL) {
+
+        printf("Unable to open file for reading.\n");
+
+        return;
+
+    }
+
+    *matchCount = 0;
+
+    while ((*matchCount) < MAX_MATCHES && fscanf(file, "%s %s %d %d %d", matches[*matchCount].homeTeam.name, matches[*matchCount].awayTeam.name, &matches[*matchCount].homeScore, &matches[*matchCount].awayScore, &matches[*matchCount].played) == 5) {
+
+        (*matchCount)++;
+
+    }
+
+    fclose(file);
+
+    printf("Match results loaded from file successfully.\n");
+
+}
+
+int main() {
+
+    struct Team teams[MAX_TEAMS];
+
+    struct Match matches[MAX_MATCHES];
+
+    int teamCount = 0;
+
+    int matchCount = 0;
+
+    int choice;
+
+    do {
+
+        printf("Menu:\n");
+
+        printf("1. Add a new team\n");
+
+        printf("2. Display teams\n");
+
+        printf("3. Add a match result\n");
+
+        printf("4. Display match results\n");
+
+        printf("5. Save teams to file\n");
+
+        printf("6. Load teams from file\n");
+
+        printf("7. Save match results to file\n");
+
+        printf("8. Load match results from file\n");
+
+        printf("9. Exit\n");
+
+        printf("Enter your choice: ");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+            case 1:
+
+                newTeam(teams, &teamCount);
+
+                break;
+
+            case 2:
+
+                displayTeams(teams, teamCount);
+
+                break;
+
+            case 3:
+
+                addMatchResult(matches, teams, &matchCount, teamCount);
+
+                break;
+
+            case 4:
+
+                displayMatchResults(matches, matchCount);
+
+                break;
+
+            case 5: {
+
+                char filename[100];
+
+                printf("Enter the filename to save teams to: ");
+
+                scanf("%s", filename);
+
+                saveTeamsToFile(teams, teamCount, filename);
+
+                break;
+
+            }
+
+            case 6: {
+
+                char filename[100];
+
+                printf("Enter the filename to load teams from: ");
+
+                scanf("%s", filename);
+
+                loadTeamsFromFile(teams, &teamCount, filename);
+
+                break;
+
+            }
+
+            case 7: {
+
+                char filename[100];
+
+                printf("Enter the filename to save match results to: ");
+
+                scanf("%s", filename);
+
+                saveMatchesToFile(matches, matchCount, filename);
+
+                break;
+
+            }
+
+            case 8: {
+
+                char filename[100];
+
+                printf("Enter the filename to load match results from: ");
+
+                scanf("%s", filename);
+
+                loadMatchesFromFile(matches, &matchCount, filename);
+
+                break;
+
+            }
+
+            case 9:
+
+                printf("Exiting program.\n");
+
+                break;
+
+            default:
+
+                printf("Invalid choice. Please try again.\n");
+
+        }
+
+    } while (choice != 9);
+
+    return 0;
+
+}
+
