@@ -1,10 +1,118 @@
-- 👋 Hi, I’m @Kentoy999
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
+#include <stdio.h>
 
-<!---
-Kentoy999/Kentoy999 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+void moveForward() {
+
+    printf("BKB moves forward.\n");
+
+}
+
+void moveBackward() {
+
+    printf("BKB moves backward.\n");
+
+}
+
+void turnLeft() {
+
+    printf("BKB turns left.\n");
+
+}
+
+void turnRight() {
+
+    printf("BKB moves right.\n");
+
+}
+
+void dance() {
+
+    printf("BKB performs a dance.\n");
+
+}
+
+int main() {
+
+    int choice;
+
+    printf("Welcome to BKB Robot Simulator!\n");
+
+    do {
+
+        printf("\nWhat action should BKB perform?\n");
+
+        printf("1. Move forward\n");
+
+        printf("2. Move backward\n");
+
+        printf("3. Turn left\n");
+
+        printf("4. Turn right\n");
+
+        printf("5. Dance\n");
+
+        printf("6. Qiut\n");
+
+        printf("Enter your choice (1-6): ");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+            case 1:
+
+                moveForward();
+
+                break;
+
+            case 2:
+
+                moveBackward();
+
+                break;
+
+            case 3:
+
+                turnLeft();
+
+                break;
+
+            case 4:
+
+                turnRight();
+
+                break;
+
+            case 5:
+
+                dance();
+
+                break;
+
+            case 6:
+
+                printf("Babooosh!\n");
+
+                break;
+
+            default:
+
+                printf("Invalid choice. Please try again.\n");
+
+        }
+
+    } while (choice != 6);
+
+    return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
